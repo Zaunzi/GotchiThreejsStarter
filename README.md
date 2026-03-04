@@ -1,71 +1,41 @@
-# SvelteKit Web3 Starter
+# Gotchi Three.js Starter
 
-A production-ready SvelteKit template for building Web3 dApps with Reown AppKit, Ethers.js, and Skeleton UI.
+A template for building **Aavegotchi games** with **Three.js** and the **Aavegotchi 3D render pipeline**. Uses SvelteKit for the app shell, Reown AppKit for wallet connection, and Three.js for 3D rendering—with Aavegotchi PNG previews and GLB models from the official renderer batch API.
 
-## Features
+## What’s in the template
 
-- 🔗 **Wallet Integration**: Built-in Reown AppKit for seamless wallet connectivity
-- 🌐 **Multi-Chain Support**: Base Sepolia testnet and Base mainnet out of the box
-- 🎨 **Modern UI**: Skeleton UI with dark/light theme support
-- 📱 **Responsive Design**: Mobile-first approach with Tailwind CSS
-- 🔧 **TypeScript**: Full TypeScript support with proper type definitions
-- ⚡ **SvelteKit**: Fast, modern web framework with excellent developer experience
-- 🧩 **Reusable Components**: Pre-built components for common Web3 interactions
-- 🔄 **Real-time Updates**: Live wallet state and network status updates
-- 💰 **ETH Balance**: Automatic ETH balance fetching and display
-- 📊 **Transaction Handling**: Built-in transaction status tracking and error handling
-- 🚰 **Testnet Faucets**: Built-in links to Base Sepolia faucets for development
-- 🌓 **Theme Switching**: Light/dark mode toggle with persistence
+- 🎮 **Three.js** – 3D game engine for Aavegotchi game logic and rendering
+- 👻 **Aavegotchi 3D render** – Server-side integration with the renderer batch API: PNG headshot/full for selection, GLB for in-game character
+- 🔗 **Wallet integration** – Reown AppKit for connecting wallets and loading Aavegotchis from the user’s wallet
+- 🌐 **Base** – Configured for Base Sepolia (testnet) and Base mainnet
+- 🎨 **Skeleton UI** – UI and theme (dark/light) for menus and selection screen
+- 📱 **Responsive** – SvelteKit + Tailwind for layout; Three.js canvas fills the play viewport
+- 🔧 **TypeScript** – Full TypeScript across Svelte and game code
+- 🎯 **Third-person controller** – WASD movement, mouse look, optional right-click freelook; camera snaps back behind the model when freelook is released
 
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
-- **Node.js 20.19.0+ or 22.12.0+** (see `.nvmrc` for recommended version)
-  - We recommend using [nvm](https://github.com/nvm-sh/nvm) to manage Node.js versions
-  - Run `nvm use` after cloning to automatically use the correct version
-- **pnpm** (strongly recommended) - see installation instructions below
-- A Reown Cloud project ID
+- **Node.js** 20.19.0+ or 22.12.0+ (see `.nvmrc`; [nvm](https://github.com/nvm-sh/nvm) recommended)
+- **pnpm** (recommended)
 
-### Installing pnpm
-
-This project uses **pnpm** as the package manager. pnpm offers significant advantages:
-
-- 🚀 **Faster installs** - Up to 2x faster than npm
-- 💾 **Disk space efficient** - Uses hard links to save disk space
-- 🔒 **Strict dependency resolution** - Prevents phantom dependencies
-- ✅ **Better monorepo support** - Excellent for large projects
-
-**Install pnpm:**
 ```bash
-# Using npm
+# Install pnpm
 npm install -g pnpm
-
-# Using Homebrew (macOS)
-brew install pnpm
-
-# Using standalone script
-curl -fsSL https://get.pnpm.io/install.sh | sh -
 ```
-
-> ⚠️ **Important:** While npm may work, we strongly recommend using pnpm for the best experience. The project is configured and tested with pnpm.
 
 ### Setup
 
-1. **Clone this repository**
+1. **Clone and enter the repo**
    ```bash
    git clone <your-repo-url>
-   cd template
+   cd GotchiThreejsStarter
    ```
 
-2. **Use the correct Node.js version**
+2. **Use the correct Node version**
    ```bash
-   # If using nvm
    nvm use
-   
-   # Or manually install/use Node.js 20.19.0+
-   nvm install 20.19.0
-   nvm use 20.19.0
    ```
 
 3. **Install dependencies**
@@ -73,244 +43,75 @@ curl -fsSL https://get.pnpm.io/install.sh | sh -
    pnpm install
    ```
 
-4. **Set up environment variables**
+4. **Environment**
    ```bash
    cp env.example .env
    ```
-   
-   Get your project ID from [Reown Cloud](https://cloud.reown.com/) and add it to `.env`:
+   Add your [Reown Cloud](https://cloud.reown.com/) project ID to `.env`:
    ```
    VITE_PROJECT_ID=your_project_id_here
    ```
 
-5. **Start the development server**
+5. **Run the dev server**
    ```bash
    pnpm run dev
    ```
+   Open [http://localhost:5173](http://localhost:5173). Connect your wallet (Base), pick an Aavegotchi, and hit Play to spawn on the purple square with third-person controls.
 
-6. **Open your browser**
-   Navigate to [http://localhost:5173](http://localhost:5173)
+## Using the Aavegotchi 3D render pipeline
 
-## Project Structure
+The template uses the **Aavegotchi renderer batch API** (Goldsky + `aavegotchi.com/api/renderer/batch`) to get PNG previews and GLB 3D models for each gotchi.
+
+- **Selection screen** – Each gotchi card calls `GET /api/render/{tokenId}`. The server queries Goldsky for gotchi data, derives the render hash, kicks off the batch, and returns `pngHeadshotUrl`, `pngFullUrl`, and `glbUrl`. Cards show the PNG; the GLB URL is cached for the play scene.
+- **Play scene** – The selected gotchi’s GLB is loaded with Three.js `GLTFLoader` and placed in a 3D scene (purple ground, lights). The third-person controller moves the character and camera; the model rotates with the camera look direction.
+- **Server module** – Hash derivation and batch logic live in `src/lib/server/renderer.ts`; the API route is `src/routes/api/render/[tokenId]/+server.ts`.
+
+You can extend the play scene (e.g. more environments, gameplay, or UI) while reusing the same selection and render pipeline.
+
+## Project structure (relevant to games)
 
 ```
 src/
 ├── lib/
-│   ├── components/
-│   │   ├── ContractInteraction.svelte  # Contract interaction component
-│   │   ├── ETHBalance.svelte           # ETH balance display
-│   │   ├── LightSwitch.svelte          # Theme toggle component
-│   │   ├── Navbar.svelte               # Navigation with wallet connect
-│   │   ├── NetworkStatus.svelte        # Network status display
-│   │   ├── TransactionButton.svelte    # Transaction handling component
-│   │   ├── WalletConnect.svelte        # Enhanced wallet connect component
-│   │   └── WalletStatus.svelte         # Main wallet status component
-│   ├── config/
-│   │   ├── appkit.ts                   # Reown AppKit configuration
-│   │   └── contracts.ts                # Contract configurations
-│   ├── stores/
-│   │   ├── walletStore.ts              # Wallet state management
-│   │   └── index.ts                    # Store exports
-│   ├── utils/
-│   │   └── web3.ts                     # Web3 utility functions
-│   └── mint.css                        # Skeleton UI theme
+│   ├── components/       # Svelte UI (navbar, wallet, GotchiCard, etc.)
+│   ├── config/           # AppKit, contracts (Aavegotchi Diamond)
+│   ├── server/           # renderer.ts (Goldsky, hash, batch API)
+│   ├── stores/           # walletStore, selectedGotchiStore
+│   ├── three/            # ThirdPersonController, playScene (ground, GLB, camera)
+│   └── utils/            # contracts, graphql types, web3
 ├── routes/
-│   ├── +layout.svelte                  # Main layout with navbar
-│   └── +page.svelte                    # Homepage with wallet demo
-├── app.css                             # Global styles
-├── app.d.ts                            # TypeScript definitions
-└── app.html                            # HTML template
+│   ├── api/render/       # GET /api/render/[tokenId]
+│   ├── +layout.svelte
+│   ├── +page.svelte      # Selection screen (gotchi grid, PNG preview, Play)
+│   └── play/+page.svelte # Three.js play scene (GLB, WASD, mouse look)
+└── ...
 ```
 
-## Usage
+- **Three.js**: Scene setup, ground, and character loading are in `src/lib/three/playScene.ts`; the third-person camera and input are in `src/lib/three/ThirdPersonController.ts`.
+- **Renderer**: Add or tweak render types and polling in `src/lib/server/renderer.ts`; the API route returns URLs for the client.
 
-### Wallet Connection
+## Scripts
 
-The template includes a complete wallet integration system:
+- `pnpm run dev` – Development server
+- `pnpm run build` – Production build
+- `pnpm run preview` – Preview production build
+- `pnpm run check` – TypeScript/svelte-check
 
-```typescript
-import { account, network, isWalletConnected, walletActions } from '$lib/stores/walletStore';
+## Networks
 
-// Check if wallet is connected
-if ($isWalletConnected) {
-  console.log('Connected to:', $account.address);
-  console.log('Network:', $network.chainId);
-}
+- **Base Sepolia** (84532) – Testnet  
+- **Base** (8453) – Mainnet  
 
-// Open wallet modal
-walletActions.open();
+Wallet and chain config live in `src/lib/config/appkit.ts`; Aavegotchi contract and render pipeline target Base.
 
-// Switch network (async)
-await walletActions.switchNetwork(8453); // Base mainnet
-```
+## Learn more
 
-### Blockchain Interactions
-
-Use Ethers.js for blockchain interactions:
-
-```typescript
-import { ethers } from 'ethers';
-import { walletActions } from '$lib/stores/walletStore';
-
-async function getBalance() {
-  const provider = walletActions.getProvider();
-  if (provider) {
-    const ethersProvider = new ethers.BrowserProvider(provider);
-    const balance = await ethersProvider.getBalance(address);
-    return ethers.formatEther(balance);
-  }
-}
-```
-
-### Theme Management
-
-The template includes automatic theme switching:
-
-```typescript
-import { modal } from '$lib/config/appkit';
-
-// Switch to dark mode
-modal.setThemeMode('dark');
-
-// Switch to light mode  
-modal.setThemeMode('light');
-```
-
-## Available Scripts
-
-All scripts should be run with `pnpm`:
-
-- `pnpm run dev` - Start development server
-- `pnpm run build` - Build for production
-- `pnpm run preview` - Preview production build
-- `pnpm run check` - Run TypeScript checks (ensures zero errors/warnings)
-- `pnpm run check:watch` - Run TypeScript checks in watch mode
-
-### Code Quality
-
-This project includes pre-commit hooks (via Husky) that automatically:
-- Run TypeScript type checking (`pnpm run check`)
-- Lint and format staged files with ESLint and Prettier
-
-This ensures code quality and prevents commits with errors or warnings.
-
-## Supported Networks
-
-- **Base Sepolia** (Chain ID: 84532) - Testnet
-- **Base** (Chain ID: 8453) - Mainnet
-
-## Customization
-
-### Adding New Networks
-
-Update `src/lib/config/appkit.ts`:
-
-```typescript
-import { polygon, polygonMumbai } from '@reown/appkit/networks';
-
-// Add to networks array
-networks: [base, baseSepolia, polygon, polygonMumbai]
-```
-
-### Custom Themes
-
-Modify `src/lib/mint.css` or create new theme files in the `src/lib/` directory.
-
-### Adding Components
-
-Create new components in `src/lib/components/` and import them where needed.
-
-## Available Components
-
-### WalletStatus.svelte
-Main wallet connection component with network status, address display, and disconnect functionality.
-
-```svelte
-<WalletStatus />
-```
-
-### ETHBalance.svelte
-Shows the current ETH balance for the connected wallet.
-
-```svelte
-<ETHBalance />
-```
-
-### NetworkStatus.svelte
-Displays current network status and online/offline state.
-
-```svelte
-<NetworkStatus />
-```
-
-### TransactionButton.svelte
-Handles transaction sending with loading states and error handling.
-
-```svelte
-<TransactionButton>
-  Send Transaction
-</TransactionButton>
-```
-
-### ContractInteraction.svelte
-Generic component for interacting with smart contracts.
-
-```svelte
-<ContractInteraction 
-  contractAddress="0x..." 
-  abi={contractABI} 
-  functionName="transfer"
-  args={[recipient, amount]}
->
-  Transfer Tokens
-</ContractInteraction>
-```
-
-### LightSwitch.svelte
-Theme toggle component for switching between light and dark modes.
-
-```svelte
-<LightSwitch />
-```
-
-## Development Tips
-
-### Using pnpm Commands
-
-Replace any `npm` commands with `pnpm`:
-
-```bash
-# Install dependencies
-pnpm install
-
-# Add a new dependency
-pnpm add <package-name>
-
-# Add a dev dependency
-pnpm add -D <package-name>
-
-# Remove a dependency
-pnpm remove <package-name>
-```
-
-### Node.js Version Management
-
-If you're using nvm, the project includes a `.nvmrc` file. Simply run:
-```bash
-nvm use
-```
-
-This will automatically switch to the correct Node.js version (20.19.0).
-
-## Learn More
-
-- [SvelteKit Documentation](https://kit.svelte.dev/docs)
-- [Skeleton UI Documentation](https://skeleton.dev/)
-- [Reown AppKit Documentation](https://docs.reown.com/appkit)
-- [Ethers.js Documentation](https://docs.ethers.org/)
-- [Base Network Documentation](https://docs.base.org/)
-- [pnpm Documentation](https://pnpm.io/)
+- [Aavegotchi](https://aavegotchi.com/) – NFT game and 3D render pipeline
+- [Three.js](https://threejs.org/) – 3D library
+- [SvelteKit](https://kit.svelte.dev/docs)
+- [Reown AppKit](https://docs.reown.com/appkit)
+- [Base](https://docs.base.org/)
 
 ## License
 
-MIT License - feel free to use this template for your projects!
+MIT. Use this template to build your own Aavegotchi games with Three.js and the 3D render pipeline.

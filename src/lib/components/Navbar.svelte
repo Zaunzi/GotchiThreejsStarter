@@ -17,7 +17,7 @@
 						<img src="/SKSFAVICON.svg" alt="SKS" class="h-6 w-6 object-contain" />
 					</div>
 					<span class="font-aavegotchi text-xl font-bold text-surface-900 dark:text-surface-100 hidden md:block lowercase">
-						sveltekit web3 starter
+						gotchi three.js starter
 					</span>
 				</a>
 			</div>

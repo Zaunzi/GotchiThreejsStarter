@@ -27,8 +27,24 @@
 	<link rel="icon" href="/SKSFAVICON.svg" type="image/svg+xml" />
 </svelte:head>
 
-<Navbar />
+<div class="layout-root">
+	<Navbar />
+	<main class="layout-main bg-surface-50 dark:bg-surface-900">
+		{@render children?.()}
+	</main>
+</div>
 
-<main class="min-h-screen bg-surface-50 dark:bg-surface-900">
-	{@render children?.()}
-</main>
+<style>
+	.layout-root {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+		min-height: 100dvh;
+		overflow: hidden;
+	}
+	.layout-main {
+		flex: 1;
+		min-height: 0;
+		overflow: auto;
+	}
+</style>

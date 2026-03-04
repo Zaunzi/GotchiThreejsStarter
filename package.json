@@ -23,6 +23,7 @@
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@tailwindcss/vite": "^4.1.18",
 		"@types/matter-js": "^0.20.2",
+		"@types/three": "^0.170.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^15.2.11",
 		"svelte": "^5.46.0",
@@ -40,6 +41,7 @@
 		"@reown/appkit-adapter-ethers": "^1.8.15",
 		"ethers": "^6.16.0",
 		"latest": "^0.2.0",
-		"matter-js": "^0.20.0"
+		"matter-js": "^0.20.0",
+		"three": "^0.170.0"
 	}
 }

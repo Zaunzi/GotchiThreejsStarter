@@ -6,6 +6,10 @@ export const CONTRACT_ADDRESSES = {
   EXAMPLE_CONTRACT: {
     [BASE_SEPOLIA_ID]: '0x0000000000000000000000000000000000000000', // Base Sepolia
     [BASE_MAINNET_ID]: '0x0000000000000000000000000000000000000000' // Base Mainnet
+  },
+  // Aavegotchi Diamond Contract (Base mainnet)
+  AAVEGOTCHI: {
+    [BASE_MAINNET_ID]: '0xa99c4b08201f2913db8d28e71d020c4298f29dbf'
   }
 } as const;
 
@@ -42,6 +46,11 @@ export const COMMON_ABIS = {
     'event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)',
     'event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)',
     'event ApprovalForAll(address indexed owner, address indexed operator, bool approved)'
+  ],
+  // AavegotchiFacet ABI - key functions for fetching gotchi data
+  AAVEGOTCHI: [
+    'function getAavegotchi(uint256 _tokenId) view returns (tuple(uint256 tokenId, string name, address owner, uint256 randomNumber, uint256 status, int16[6] numericTraits, int16[6] modifiedNumericTraits, uint16[16] equippedWearables, address collateral, address escrow, uint256 stakedAmount, uint256 minimumStake, uint256 kinship, uint256 lastInteracted, uint256 experience, uint256 toNextLevel, uint256 usedSkillPoints, uint256 level, uint256 hauntId, uint256 baseRarityScore, uint256 modifiedRarityScore, bool locked, tuple(uint256 balance, uint256 itemId, tuple(string name, string description, string author, int8[6] traitModifiers, bool[16] slotPositions, uint8[] allowedCollaterals, tuple(uint8 x, uint8 y, uint8 width, uint8 height) dimensions, uint256 ghstPrice, uint256 maxQuantity, uint256 totalQuantity, uint32 svgId, uint8 rarityScoreModifier, bool canPurchaseWithGhst, uint16 minLevel, bool canBeTransferred, uint8 category, int16 kinshipBonus, uint32 experienceBonus) itemType)[] items))',
+    'function tokenIdsOfOwner(address _owner) view returns (uint32[] tokenIds)'
   ]
 } as const;
 
