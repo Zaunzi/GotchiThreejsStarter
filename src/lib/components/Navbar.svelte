@@ -4,7 +4,7 @@
 	import ThemeSwitcher from './ThemeSwitcher.svelte';
 	import { Github } from '@lucide/svelte';
 
-	const GITHUB_URL = 'https://github.com/Zaunzi/SveltekitWeb3Starter';
+	const GITHUB_URL = 'https://github.com/Zaunzi/GotchiThreejsStarter';
 </script>
 
 <nav class="navbar bg-surface-50 dark:bg-surface-900 shadow-sm">
