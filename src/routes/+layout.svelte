@@ -1,10 +1,13 @@
 <script lang="ts">
 	import '../app.css';
 	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { FALLBACK_THEME } from '$lib/constants/themes';
 	import { initWalletStore } from '$lib/stores/walletStore';
+
+	const ogImageUrl = $derived(new URL('/gtsogimage.png', $page.url.origin).href);
 
 	// TODO: Consolidate theme initialization logic - this is duplicated in app.html, ThemeSwitcher.svelte, and LightSwitch.svelte
 	// Initialize theme and mode on layout load
@@ -25,6 +28,12 @@
 
 <svelte:head>
 	<link rel="icon" href="/SKSFAVICON.svg" type="image/svg+xml" />
+	<!-- Open Graph / SEO -->
+	<meta property="og:image" content={ogImageUrl} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:image" content={ogImageUrl} />
 </svelte:head>
 
 <div class="layout-root">
